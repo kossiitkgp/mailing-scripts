@@ -9,12 +9,14 @@ from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+from emailContents import signature
+from emailContents import getTaskMail
 
 # If modifying SCOPES, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
 if len(sys.argv) < 3:
-    print("Usage: python script.py <csv_file> <day, date> (for the deadline)")
+    print("Usage: python3 task_mailing.py <csv_file> <day, date> (for the deadline)")
     sys.exit(1)
 
 csv_file = sys.argv[1]
@@ -67,30 +69,11 @@ def main():
             name = row[2]
             taskURL = row[7]
 
-            emailContents = f"""Hello {name},<br><br>
-
-Congratulations! You have made it to the second round of selections. You can find your task in the GitHub link below.<br><br>
-
-<a href="{taskURL}">{taskURL}</a><br><br>
-
-<i>The task may seem daunting at first because it is daunting given the time frame. However, we are more concerned with your approach rather than the final delivery</i>.<br><br>
-
-We expect you to upload your code/presentation to a GitHub repository and share the link with us as a reply to this email by <b>{deadline}, at 1 AM</b>.<br><br>
-
-Round - 2 Interview is scheduled for <b>{deadline}</b> tentatively. The exact timings will be mailed later.<br><br>
-
-In case of any issues with the task, or if you want to change your task, please drop us a mail or contact any of us.<br><br>
-
-Happy Learning!<br>
---<br>
-Regards,<br>
-Kharagpur Open Source Society<br>
-IIT Kharagpur<br>
-<a href="https://kossiitkgp.org/">Website</a> | <a href="https://github.com/kossiitkgp">GitHub</a> | <a href="https://facebook.com/kossiitkgp">Facebook</a> | <a href="https://twitter.com/kossiitkgp">Twitter</a>"""
-
-            sender = "admin@kossiitkgp.org"  # Replace with your email address
+            sender = "admin@kossiitkgp.org"
             subject = "KOSS Selections - Task"
-            message = create_message(sender, email, subject, emailContents)
+            emailBody = getTaskMail(name, taskURL, deadline)
+            emailContent = emailBody + signature
+            message = create_message(sender, email, subject, emailContent)
             send_message(service, "me", {"raw": message})
             print(f'Message sent. E-mail ID: {email}')
 

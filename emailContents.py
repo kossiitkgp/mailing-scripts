@@ -1,21 +1,22 @@
 # For formatting use HTML
 
-# task = f"""Hello {name},<br><br>
-#
-# Congratulations! You have made it to the second round of selections. You can find your task in the GitHub link below.<br><br>
-#
-# <a href="{taskURL}">{taskURL}</a><br><br>
-#
-# <i>The task may seem daunting at first because it is daunting given the time frame. However, we are more concerned with your approach rather than the final delivery</i>.<br><br>
-#
-# We expect you to upload your code/presentation to a GitHub repository and share the link with us as a reply to this email by <b>{deadline}, at 1 AM</b>.<br><br>
-#
-# Round - 2 Interview is scheduled for <b>{deadline}</b> tentatively. The exact timings will be mailed later.<br><br>
-#
-# In case of any issues with the task, or if you want to change your task, please drop us a mail or contact any of us.<br><br>
-#
-# Happy Learning!
-# """
+def getTaskMail(name, taskURL, deadline):
+    task = f"""Hello {name},<br><br>
+Congratulations! You have made it to the second round of selections. You can find your task in the GitHub link below.<br><br>
+
+<a href="{taskURL}">{taskURL}</a><br><br>
+
+<i>The task may seem daunting at first because it is daunting given the time frame. However, we are more concerned with your approach rather than the final delivery</i>.<br><br>
+
+We expect you to upload your code/presentation to a GitHub repository and share the link with us as a reply to this email by <b>{deadline}, at 1 AM</b>.<br><br>
+
+Round - 2 Interview is scheduled for <b>{deadline}</b> tentatively. The exact timings will be mailed later.<br><br>
+
+In case of any issues with the task, or if you want to change your task, please drop us a mail or contact any of us.<br><br>
+
+Happy Learning!
+"""
+    return task
 
 rejection = f"""Hello,<br><br>
             
@@ -38,7 +39,7 @@ Here are some resources below which you may find useful:
     </ol>
 """
 
-signature=f"""--<br>
+signature = f"""--<br>
 Regards,<br>
 Kharagpur Open Source Society<br>
 IIT Kharagpur<br>
