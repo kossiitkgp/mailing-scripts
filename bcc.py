@@ -14,11 +14,24 @@ from google.auth.transport.requests import Request
 # If modifying SCOPES, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
-if len(sys.argv) < 3:
-    print("Usage: python3 bcc.py <name of the variable referring to the 'compaitible' email body stored in emailContents.py - (rejection)> <csv_file>")
+if len(sys.argv) < 2:
+    print("ERROR: python3 bcc.py <name of the variable referring to the 'compaitible' email body stored in emailContents.py - (rejection/interview supproted currently>")
+    print("Run: python3 bcc.py <interview/rejection> to know about their usecases")
     sys.exit(1)
-
+    
 mail_body = sys.argv[1]
+
+if mail_body == "rejection":
+    if len(sys.argv) < 3:
+        print("Usage: python3 bcc.py rejection <csv_file>")
+        print("Example: python3 bcc.py rejection csv/rejected.csv")
+        sys.exit(1)
+elif mail_body == "interview":
+    if len(sys.argv) < 4:
+        print("Usage: python3 bcc.py interview <csv_file> <slot_details (Day, Date, Timing)>")
+        print("Example: python3 bcc.py interview csv/d1s2.csv 'Thursday, 12 May, 9:00PM - 10:00PM'")
+        sys.exit(1)
+    
 csv_file = sys.argv[2]
 
 def create_message(sender, to, bcc, subject, message):
@@ -71,13 +84,17 @@ def main():
             emails.append(email)  # Add the email to the BCC list
             print(f"BCC TO: {email}")
             
-            emailBody = getattr(emailContents, mail_body)
-            emailContent = emailBody + emailContents.signature
-
+        if mail_body == "rejection":
+            emailBody = getattr(emailContents, "rejection")
+            subject = "Update on KOSS Selections"
+        elif mail_body == "interview":
+            emailBody = emailContents.getInterviewMail(sys.argv[3])
+            subject = "KOSS Selection Interview"
+            
         # Create a single message with BCC recipients
         sender = "admin@kossiitkgp.org"  # Replace with your email address
-        subject = "Update on KOSS Selections"
         bcc = ", ".join(emails)  # Join the emails with commas for BCC
+        emailContent = emailBody + emailContents.signature
         message = create_message(sender, "", bcc, subject, emailContent)  # Set "to" as an empty string
         send_message(service, "me", {"raw": message})
         print(f"Email sent to {len(emails)} recipients as BCC.")

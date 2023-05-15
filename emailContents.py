@@ -1,5 +1,14 @@
 # For formatting use HTML
 
+def getInterviewMail(slotTime):
+    interview = f""" Hello,<br>
+<i>Thanks for your interest in KOSS</i>. Your scheduled interview slot is on <b>{slotTime}</b>.<br>
+Meet link: <b><a href="https://meet.google.com/ycq-ywhn-ajm">https://meet.google.com/ycq-ywhn-ajm</a></b> (<i>Join this lobby in the above-mentioned slot and</i> <b>mention your name in the chat box</b>. <i>You will be called for a personal interview once a panel becomes free.</i>)<br><br>
+
+<i>Kindly join during the slot mentioned above or reply to this mail in case of any issues with the timings. Due to a lot of applications and busy slots, rescheduling the meeting can be difficult for us, so we request you to stick with your slots and ask for a reschedule only if absolutely necessary.</i><br>
+"""
+    return interview
+
 def getTaskMail(name, taskURL, deadline):
     task = f"""Hello {name},<br><br>
 Congratulations! You have made it to the second round of selections. You can find your task in the GitHub link below.<br><br>
