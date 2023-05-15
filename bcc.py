@@ -3,6 +3,7 @@ import getpass
 import sys
 import os
 import base64
+import emailContents
 from email.utils import formataddr
 from email.header import Header
 from googleapiclient.discovery import build
@@ -13,11 +14,12 @@ from google.auth.transport.requests import Request
 # If modifying SCOPES, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
-if len(sys.argv) < 2:
-    print("Usage: python script.py <csv_file>")
+if len(sys.argv) < 3:
+    print("Usage: python3 bcc.py <name of the variable referring to the 'compaitible' email body stored in emailContents.py - (rejection)> <csv_file>")
     sys.exit(1)
 
-csv_file = sys.argv[1]
+mail_body = sys.argv[1]
+csv_file = sys.argv[2]
 
 def create_message(sender, to, bcc, subject, message):
     formatted_sender = formataddr((str(Header('KOSS IIT Kharagpur', 'utf-8')), sender))
@@ -66,41 +68,17 @@ def main():
 
         for row in reader:
             email = row[1]
-            print(f"BCC TO: {email}")
             emails.append(email)  # Add the email to the BCC list
-
-            emailContents = f"""Hello,<br><br>
+            print(f"BCC TO: {email}")
             
-We are afraid to be writing with some bad news. Unfortunately, we would not be able to extend your selection application to Kharagpur Open Source Society.<br><br>
-
-The selections this year have by far been the toughest we have experienced, even after stretching the interview and judging process for many days.<br><br>
-
-Your caliber was outstanding to the point that we found ourselves, unfortunately, having to turn down even the most highly qualified applicants with fantastic submissions. We tried our best to increase the amount of intake this year, but we don't have the bandwidth to be able to take on more of you and still ensure you all have a great experience.<br><br>
-
-Even if you’re not a part of KOSS, we still hope to work together to spread Open Source awareness in Kharagpur because it takes a whole village to do that. We’re rooting for you and looking forward to seeing what you do next.<br><br>
-
-Here are some resources below which you may find useful:
-    
-    <ol>
-    <li><a href="https://rejected.us/">We've All Faced Rejection</a></li>
-    <li><a href="https://github.com/deepanshu1422/List-Of-Open-Source-Internships-Programs">List of Open Source Internship Programs</a></li>
-    <li><a href="https://slack.metakgp.org/">Invitation to MetaKGP Slack</a></li>
-    <li><a href="https://1x.engineer/">1x Engineer</a></li>
-    <li><a href="https://github.com/codecrafters-io/build-your-own-x">Build Your Own X</a></li>
-    </ol>
-            
---<br>
-Regards,<br>
-Kharagpur Open Source Society<br>
-IIT Kharagpur<br>
-<a href="https://kossiitkgp.org/">Website</a> | <a href="https://github.com/kossiitkgp">GitHub</a> | <a href="https://facebook.com/kossiitkgp">Facebook</a> | <a href="https://twitter.com/kossiitkgp">Twitter</a>"""
+            emailBody = getattr(emailContents, mail_body)
+            emailContent = emailBody + emailContents.signature
 
         # Create a single message with BCC recipients
         sender = "admin@kossiitkgp.org"  # Replace with your email address
         subject = "Update on KOSS Selections"
         bcc = ", ".join(emails)  # Join the emails with commas for BCC
-        message = create_message(sender, "", bcc, subject, emailContents)  # Set "to" as an empty string
-
+        message = create_message(sender, "", bcc, subject, emailContent)  # Set "to" as an empty string
         send_message(service, "me", {"raw": message})
         print(f"Email sent to {len(emails)} recipients as BCC.")
 
