@@ -48,13 +48,13 @@ Automates the mailing of selection status (rejection status and next round task)
 Here is the description on how to execute the scripts:
 
 ```graphql
-python3 rejection-mailing-bcc.py (path to csv file containing rejected students details)
+python3 bcc.py (name of the variable containing the mail to be sent, in emailContents.py) (path to csv file containing rejected students details)
 python3 task-mailing.py (path to csv file containing details about students and task for a particular day) (day, DD MON YEAR [Task submission deadline])
 ```
 
 Here is an example:
 
 ```bash
-python3 rejection-mailing-bcc.py csv/rejected.csv
+python3 bcc.py rejection csv/rejected.csv
 python3 task-mailing.py csv/day2.csv "Tuesday, 23 May 2023"
 ```
