@@ -1,6 +1,6 @@
 # Selection Mailing Automation
 
-Automates the selection status (rejection or selection task) during the selection procedure in KOSS.
+Automates the mailing of selection status (rejection status and next round task) during the selection procedure in KOSS.
  
 ### Getting the csv files
 
@@ -28,6 +28,7 @@ Automates the selection status (rejection or selection task) during the selectio
 4. Create credentials for your project:
     - In the Cloud Console, navigate to the "APIs & Services" > "Credentials" page.
     - Click the "Create Credentials" button and select "OAuth client ID".
+    - If you don't have any "OAuth client ID" then you will have to create it, you can keep the settings however you want just make sure to add `admin@kossiitkgp.org` as a valid testing account/user during the 3rd step of creation.
     - Choose "Desktop app" as the application type (since you're running the script locally).
     - Fill in the name for the OAuth client ID and click the "Create" button.
     - You'll see your client ID and client secret on the next screen.
@@ -48,7 +49,7 @@ Here is the description on how to execute the scripts:
 
 ```graphql
 python3 rejection-mailing-bcc.py (path to csv file containing rejected students details)
-python3 task-mailing.py (path to csv file containing detals about students and task for a particular day) (day, DD MON YEAR [Task submission deadline])
+python3 task-mailing.py (path to csv file containing details about students and task for a particular day) (day, DD MON YEAR [Task submission deadline])
 ```
 
 Here is an example:
