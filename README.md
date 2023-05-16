@@ -2,17 +2,7 @@
 
 Automates the mailing of selection status (rejection status and next round task) during the selection procedure in KOSS.
  
-### Getting the csv files
-
-1. Go to the google sheets of the form responses.
-
-2. Create a subsheet containing all those entries which are to be given tasks for a particular day. 
-
-3. Make sure the `email` and `Tentative Task` fields are properly filled with link to task on github.
-
-4. Goto `File` > `Download` > `.csv format`.
-
-5. Save it inside `csv` folder in root directory of the script.
+> **Warning** Always do a test run before using it, there are many things which might go wrong and we can't afford that.
 
 ### Getting credentials.json for GMail enabled googleapi
 
@@ -55,7 +45,8 @@ python3 task-mailing.py (path to csv file containing details about students and 
 Here are one example for each case supported:
 
 ```bash
-python3 bcc.py rejection csv/rejected.csv
 python3 bcc.py interview csv/d1s2.csv "Saturday, 12 May, 10:00PM - 11:00PM"
-python3 task-mailing.py csv/day2.csv "Tuesday, 23 May 2023"
+python3 bcc.py rejection csv/rejected.csv
+python3 one-to-one.py task csv/day2.csv "Tuesday, 23 May 2023"
+python3 one-to-one.py onboarding csv/day2.csv "250+"
 ```
