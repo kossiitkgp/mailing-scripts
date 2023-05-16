@@ -31,6 +31,10 @@ elif mail_body == "interview":
         print("Usage: python3 bcc.py interview <csv_file> <slot_details (Day, Date, Timing)>")
         print("Example: python3 bcc.py interview csv/d1s2.csv 'Thursday, 12 May, 9:00PM - 10:00PM'")
         sys.exit(1)
+else:
+    print("ERROR: python3 bcc.py <name of the variable referring to the 'compaitible' email body stored in emailContents.py - (rejection/interview supproted currently>")
+    print("Run: python3 bcc.py <interview/rejection> to know about their usecases")
+    sys.exit(1)
     
 csv_file = sys.argv[2]
 
