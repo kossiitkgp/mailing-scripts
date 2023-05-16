@@ -5,7 +5,7 @@ def getInterviewMail(slotTime):
 <i>Thanks for your interest in KOSS</i>. Your scheduled interview slot is on <b>{slotTime}</b>.<br>
 Meet link: <b><a href="https://meet.google.com/ycq-ywhn-ajm">https://meet.google.com/ycq-ywhn-ajm</a></b> (<i>Join this lobby in the above-mentioned slot and</i> <b>mention your name in the chat box</b>. <i>You will be called for a personal interview once a panel becomes free.</i>)<br><br>
 
-<i>Kindly join during the slot mentioned above or reply to this mail in case of any issues with the timings. Due to a lot of applications and busy slots, rescheduling the meeting can be difficult for us, so we request you to stick with your slots and ask for a reschedule only if absolutely necessary.</i><br>
+<i>Kindly join during the slot mentioned above or reply to this mail in case of any issues with the timings. Due to a lot of applications and busy slots, rescheduling the meeting can be difficult for us, so we request you to stick with your slots and ask for a reschedule only if absolutely necessary.</i><br><br>
 """
     return interview
 
@@ -23,7 +23,7 @@ Round - 2 Interview is scheduled for <b>{deadline}</b> tentatively. The exact ti
 
 In case of any issues with the task, or if you want to change your task, please drop us a mail or contact any of us.<br><br>
 
-Happy Learning!
+Happy Learning!<br><br>
 """
     return task
 
@@ -47,6 +47,25 @@ Here are some resources below which you may find useful:
     <li><a href="https://github.com/codecrafters-io/build-your-own-x">Build Your Own X</a></li>
     </ol>
 """
+
+def getOnboardingMail(name, number_of_applicants):
+    onboarding = f"""Hi {name},<br><br>
+
+<b>Congratulations and Welcome to KOSS!</b><br><br>
+
+We're sure that you've been waiting for the results of the selections. We really appreciate you giving time to our interview sessions and completing the given task on time, especially with endsems approaching.<br><br>
+
+We had a great time with you in our selection process. We received over <b>{number_of_applicants} applications</b> and the selections this year have by far been the toughest we have experienced, even after stretching the interview and judging process for many days.<br><br>
+
+Your answers and experience caught our attention. In the interview, we found that your vision was similar to ours and thus you will be a perfect addition to our team. We know we will enjoy working with you and we'll have to work hard to keep up with your enthusiasm!<br><br>
+
+We cannot express how thrilled we are through this email! We would love to meet you as soon as we can. <i>You will receive an email soon with the details of induction sessions which will introduce you to everybody at KOSS.</i><br><br>
+
+<i>As a part of your onboarding process, we'll add you to the KOSS Slack workspace which we use for discussion and planning.</i> <b>In case you want to use a different email to join the workspace, do let us know and we'll send an invite there instead.</b> Also, check out different channels and explore around to make sure you're comfortable with using Slack.<br><br>
+
+Cheers!<br><br>
+    """
+    return onboarding
 
 signature = f"""--<br>
 Regards,<br>
