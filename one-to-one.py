@@ -3,7 +3,6 @@ import getpass
 import sys
 import os
 import base64
-import emailContents
 from email.utils import formataddr
 from email.header import Header
 from googleapiclient.discovery import build
@@ -11,32 +10,32 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
+# Help and number of argument passed checker
+if len(sys.argv) < 3:
+    print("USAGE: python3 one-to-one.py <template_file> <csv_file> (OPTIONAL)<other_variables>")
+    print("python3 one-to-one.py selections/onboarding onboarding.csv")
+    print("python3 one-to-one.py selections/onboarding onboarding.csv number_of_applicants='250+'")
+    sys.exit(1)
+    
 # If modifying SCOPES, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
-if len(sys.argv) < 2:
-    print("ERROR: python3 bcc.py <name of the variable referring to the 'compaitible' email body stored in emailContents.py - (task/onboarding supproted currently>")
-    print("Run: python3 bcc.py <task/onboarding> to know about their usecases")
-    sys.exit(1)
-    
-mail_body = sys.argv[1]
+# Various files being used
+template_file = "./templates/" + sys.argv[1]
+csv_file = "./csv/" + sys.argv[2]
+signature_file = "./templates/signature"
 
-if mail_body == "task":
-    if len(sys.argv) < 3:
-        print("Usage: python3 bcc.py task <csv_file> <deadline>")
-        print("Example: python3 bcc.py task csv/day1.csv 'Tuesday, 23 May 2023'")
-        sys.exit(1)
-elif mail_body == "onboarding":
-    if len(sys.argv) < 4:
-        print("Usage: python3 bcc.py onboarding <csv_file> <slot_details (Day, Date, Timing)>")
-        print("Example: python3 bcc.py onboarding csv/day1.csv '250+'")
-        sys.exit(1)
-else:
-    print("ERROR: python3 bcc.py <name of the variable referring to the 'compaitible' email body stored in emailContents.py - (task/onboarding supproted currently>")
-    print("Run: python3 bcc.py <task/onboarding> to know about their usecases")
-    sys.exit(1)
-    
-csv_file = sys.argv[2]
+# Getting subject
+with open(template_file, "r") as file:
+    subject = file.readline().strip()
+# Getting mail body
+lines = []
+with open(template_file, "r") as file:
+    lines = file.readlines()[2:]  # Slice the list starting from index 2 (line number 3)
+email_body = "".join(lines)
+# Getting signature
+with open(signature_file) as file:
+    signature = file.read()
 
 def create_message(sender, to, subject, message):
     formatted_sender = formataddr((str(Header('KOSS IIT Kharagpur', 'utf-8')), sender))
@@ -57,7 +56,7 @@ def send_message(service, user_id, message):
     except Exception as e:
         print(f"An error occurred while sending the message: {e}")
 
-def main():
+def main(subject, email_body, signature):
     creds = None
 
     if os.path.exists("token.json"):
@@ -75,6 +74,16 @@ def main():
             token.write(creds.to_json())
 
     service = build("gmail", "v1", credentials=creds)
+    
+    # Getting extra variables if required by the template
+    if len(sys.argv) > 3:
+        variables = {}
+        for arg in sys.argv[3:]:
+            variable, value = arg.split("=")
+            variables[variable] = value
+            
+        email_body = fill_variables(email_body, variables)
+        subject = fill_variables(subject, variables)
 
     with open(csv_file, newline="") as f:
         reader = csv.reader(f)
@@ -89,17 +98,15 @@ def main():
                 taskURL = row[7]
                 deadline = sys.argv[3]
                 emailBody = emailContents.getTaskMail(name, taskURL, deadline)
-                subject = "KOSS Selections - Task"
             elif mail_body == "onboarding":
                 number_of_participants = sys.argv[3]
                 emailBody = emailContents.getOnboardingMail(name, number_of_participants)
-                subject = f"Congratulations {name}! Welcome to Kharagpur Open Source Society!"
-            emailContent = emailBody + emailContents.signature
-            message = create_message(sender, email, subject, emailContent)
+            email_content = email_body + signature
+            message = create_message(sender, email, subject, email_content)
             send_message(service, "me", {"raw": message})
-            print(f'Message sent. E-mail ID: {email}')
+            print(f'Message sent to: {email}')
 
     print("Script execution completed.")
 
 if __name__ == "__main__":
-    main()
+    main(subject, email_body, signature)
