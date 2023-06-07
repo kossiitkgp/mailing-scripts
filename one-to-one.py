@@ -83,10 +83,10 @@ def main():
         for row in reader:
             email = row[1]
             name = row[2]
-            taskURL = row[7]
 
             sender = "admin@kossiitkgp.org"
             if mail_body == "task":
+                taskURL = row[7]
                 deadline = sys.argv[3]
                 emailBody = emailContents.getTaskMail(name, taskURL, deadline)
                 subject = "KOSS Selections - Task"
