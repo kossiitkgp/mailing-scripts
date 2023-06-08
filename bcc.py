@@ -12,7 +12,7 @@ from google.auth.transport.requests import Request
 
 # Help and number of argument passed checker
 if len(sys.argv) < 3:
-    print("USAGE: python3 bcc.py <template_file> <csv_file> (OPTIONAL)<other_variables>")
+    print("USAGE: python3 bcc.py <template_file> <csv_file> (OPTIONAL)<variables_with_same_value_for_all_mails>")
     print("python3 bcc.py selections/rejection rejected.csv")
     print("python3 bcc.py selections/rejection rejected.csv number_of_applicants='250+'")
     sys.exit(1)
