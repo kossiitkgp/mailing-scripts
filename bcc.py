@@ -25,13 +25,11 @@ template_file = "./templates/" + sys.argv[1]
 csv_file = "./csv/" + sys.argv[2]
 signature_file = "./templates/signature"
 
-# Getting subject
-with open(template_file, "r") as file:
-    subject = file.readline().strip()
-# Getting mail body
+# Getting subject and mail body
 lines = []
 with open(template_file, "r") as file:
-    lines = file.readlines()[2:]  # Slice the list starting from index 2 (line number 3)
+    subject = file.readline().strip()
+    lines = file.readlines()[1:]  # Slice the list starting from index 2 (line number 3)
 email_body = "".join(lines)
 # Getting signature
 with open(signature_file) as file:
