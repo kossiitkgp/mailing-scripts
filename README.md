@@ -4,7 +4,38 @@ Automates the mailing process for KOSS during various events like KWoC and selec
  
 > **Warning** Always do a test run before using the scripts, there are many things which might go wrong and we can't afford sending broken/incorrect mails to the reciepients.
 
-### Getting credentials.json for GMail enabled googleapi
+### How to use
+
+0. For the first time, you need to [generate token for api](#generating-token-for-gmail-enabled-googleapi).
+
+1. Either use already available templates or create a new template with the convention mentioned in [about templates](./templates/README.md)
+
+2. Make sure the csv files meets the following requirements:
+    - The email column must be the 2nd column(when counting starts from 1).
+
+3. Make sure the files are stored in correct directory:
+    - Templates files must be stored in `./templates/`.
+    - CSV files must be stored in `./csv/`, 
+
+    Hence no need to mention them again while specifying the location, just speciy the location after these default directories.
+
+4. Use the script according to your needs, `bcc.py` or `one-to-one.py`. Both follow same method of execution
+    ```bash
+    python3 script.py <template> <csv_file> (OPTIONAL)<variables with same value for all mails>
+    ```
+    
+### Executing the scripts
+
+Here are one example for each case supported:
+
+```bash
+python3 one-to-one.py selections/onboarding onboarding.csv number_of_applicants="250+"
+python3 one-to-one.py selections/task day1.csv deadline="9 June 2023"
+python3 one-to-one.py selections/round1-interview-slot slot_time="3 June, 10:00 PM - 11:00 PM"
+python3 bcc.py selections/rejection rejected.csv
+```
+
+### Generating token for GMail enabled googleapi
 
 1. Go to the [Google Cloud Console](https://console.cloud.google.com).
 
@@ -26,16 +57,9 @@ Automates the mailing process for KOSS during various events like KWoC and selec
 5. Generate a refresh token:
     - Download the JSON file for the created OAuth client ID by clicking on the download icon next to it.
     - Save the JSON file securely in the root folder of this repository.
-    - Run any of the script for the first time. Refer [Executing the scripts](#executing-the-scripts) section for commands.
+    - Run any of the scripts. Refer [Executing the scripts](#executing-the-scripts) section for commands.
     - Browser window will open and ask you to select the account, choose `admin@kossiitkgp.org` (get access to it if you don't have).
     - Allow permission on that email to use just enabled __GMAIL API__.
     - `token.json` will be generated in the root directory of this repository and mailing will start.
     
 6. Next time mailing will start automatically since `token.json` has been generated.
-
-### Executing the scripts
-
-Here are one example for each case supported:
-
-```bash
-```

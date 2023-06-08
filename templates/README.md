@@ -3,8 +3,6 @@
 Things to keep in mind regarding templates:
 
 - First line is the subject for the mail.
-- Mail body and subject __are and must__ be separated by an empty new line.
-- The email column must be the 2nd column(if the counting starts from 1) in the csv file, it is fixed because 99% of the time this is how it's gonna be.
-- Templates are by default stored in `./templates/` and csv must be stored in a folder as `./csv/`, hence no need to mention them again while specifying the location, just speciy the location after these default folders.
+- Mail body and subject __are and must be__ separated by an empty new line.
 - Use HTML syntax to format the mail body.
-- Update the variable to column name mapping in `variable_mapping.py` if there is new variable for a template.
+- Update the _variable to column name mapping_ in `variable_mapping.py`, if there is a new variable for a template whose value will be retrieved from the csv file.
