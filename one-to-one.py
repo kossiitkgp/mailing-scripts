@@ -63,6 +63,13 @@ def fill_variables(content, variables):
 
     return content 
 
+def validate_email(email):
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    if re.match(pattern, email):
+        return True
+    else:
+        return False
+
 def main(subject_template, email_body_template, signature):
     creds = None
 
@@ -97,6 +104,9 @@ def main(subject_template, email_body_template, signature):
 
         for row in reader:
             email = row.get("Email")
+            if not validate_email(email):
+                print(f'Invalid mail provided: {email}')
+                continue
             
             # Getting unique variables values
             variable_placeholders = re.findall(r"\{(\w+)\}", email_body_template)

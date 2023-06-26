@@ -2,6 +2,7 @@ import csv
 import getpass
 import sys
 import os
+import re
 import base64
 from email.utils import formataddr
 from email.header import Header
@@ -62,6 +63,13 @@ def fill_variables(content, variables):
 
     return content 
 
+def validate_email(email):
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    if re.match(pattern, email):
+        return True
+    else:
+        return False
+
 def main(subject, email_body, signature):
     creds = None
 
@@ -99,6 +107,10 @@ def main(subject, email_body, signature):
 
         for row in reader:
             email = row[1]
+            if not validate_email(email):
+                print(f'Invalid mail provided: {email}')
+                continue
+            
             emails.append(email)  # Add the email to the BCC list
             print(f"BCC TO: {email}")
             
