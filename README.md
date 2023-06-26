@@ -32,8 +32,8 @@ Here are one example for each case supported:
 python3 one-to-one.py selections/onboarding onboarding.csv number_of_applicants="250+"
 python3 one-to-one.py selections/task day1.csv deadline="Monday, 9 June 2023"
 python3 bcc.py selections/rejection rejected.csv
-python3 bcc.py selections/round1-interview-slot slot_time="Tuesday, 3 June 2023, 10:00 PM - 11:00 PM" lobby_link="https://meet.google.com/xxx-xxxx-xxx"
-python3 bcc.py selections/round2-interview-slot slot_time="Tuesday, 3 June 2023, 10:00 PM - 11:00 PM" lobby_link="https://meet.google.com/xxx-xxxx-xxx"
+python3 bcc.py selections/round1-interview-slot r1d1.csv slot_time="Tuesday, 3 June 2023, 10:00 PM - 11:00 PM" lobby_link="https://meet.google.com/xxx-xxxx-xxx"
+python3 bcc.py selections/round2-interview-slot r2d2.csv slot_time="Tuesday, 3 June 2023, 10:00 PM - 11:00 PM" lobby_link="https://meet.google.com/xxx-xxxx-xxx"
 ```
 
 ### Generating token for GMail enabled googleapi
