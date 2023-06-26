@@ -89,12 +89,12 @@ def main(subject, email_body, signature):
 
     service = build("gmail", "v1", credentials=creds)
 
-    # Getting extra variables if required by the template
+    # Getting extra variables if required by the template - from cli arguments
     if len(sys.argv) > 3:
         variables = {}
         for arg in sys.argv[3:]:
             variable, value = arg.split("=")
-            variables[variable] = value
+            variables[variable] = value.strip()
             
         email_body = fill_variables(email_body, variables)
         subject = fill_variables(subject, variables)
@@ -106,7 +106,7 @@ def main(subject, email_body, signature):
         emails = []  # List to store the email addresses for BCC
 
         for row in reader:
-            email = row[1]
+            email = row[1].strip()
             if not validate_email(email):
                 print(f'Invalid mail provided: {email}')
                 continue
