@@ -10,6 +10,7 @@ from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+from templates.variable_mappings import variable_column_mapping
 
 # Help and number of argument passed checker
 if len(sys.argv) < 3:
@@ -100,13 +101,22 @@ def main(subject, email_body, signature):
         subject = fill_variables(subject, variables)
 
     with open(csv_file, newline="") as f:
-        reader = csv.reader(f)
-        next(reader)  # Skip the header row
-
+        reader = csv.DictReader(f)
+        
         emails = []  # List to store the email addresses for BCC
 
         for row in reader:
-            email = row[1].strip()
+            # Getting unique variables values - from the CSV file
+            required_columns = set([column for variables in variable_column_mapping.values() for column in variables if column in row])
+
+            variables = {}
+            for variable, columns in variable_column_mapping.items():
+                for column in columns:
+                    if column in required_columns:
+                        variables[variable] = row.get(column, "").strip()
+                        break
+
+            email = variables['email'].strip()
             if not validate_email(email):
                 print(f'Invalid mail provided: {email}')
                 continue

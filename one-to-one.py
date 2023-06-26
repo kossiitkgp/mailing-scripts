@@ -103,19 +103,20 @@ def main(subject_template, email_body_template, signature):
         reader = csv.DictReader(file)
 
         for row in reader:
-            email = row.get("Email").strip()
+            # Getting unique variables values - from the CSV file
+            required_columns = set([column for variables in variable_column_mapping.values() for column in variables if column in row])
+
+            variables = {}
+            for variable, columns in variable_column_mapping.items():
+                for column in columns:
+                    if column in required_columns:
+                        variables[variable] = row.get(column, "").strip()
+                        break
+                    
+            email = variables['email'].strip()
             if not validate_email(email):
                 print(f'Invalid mail provided: {email}')
                 continue
-            
-            # Getting unique variables values - from the CSV file
-            variable_placeholders = re.findall(r"\{(\w+)\}", email_body_template)
-            required_columns = set(variable_column_mapping.get(var) for var in variable_placeholders)
-
-            variables = {}
-            for variable, column in variable_column_mapping.items():
-                if column in required_columns:
-                    variables[variable] = row.get(column, "").strip()
 
             email_body = fill_variables(email_body_template, variables)
             subject = fill_variables(subject_template, variables)
