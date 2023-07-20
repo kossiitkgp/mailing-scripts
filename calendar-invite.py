@@ -4,7 +4,6 @@ import sys
 import os
 import base64
 import re
-import mimetypes
 
 from email.utils import formataddr
 from email.header import Header
@@ -57,19 +56,6 @@ def convert_to_RFC3339(input):
     chunks[2]=str(chunks[2]).zfill(2)
 
     return [f"{chunks[3]}-{chunks[2]}-{chunks[1]}T{chunks[4]}:{chunks[5]}:00",f"{chunks[3]}-{chunks[2]}-{chunks[1]}T{chunks[7]}:{chunks[8]}:00"]
-
-    formatted_sender = formataddr((str(Header('KOSS IIT Kharagpur', 'utf-8')), sender))
-    message = (
-        f"From: {formatted_sender}\n"
-        f"To: {to}\n"
-        f"Subject: {subject}\n"
-        f"MIME-Version: 1.0\n"
-        f"Content-Type: text/html; charset=utf-8\n"
-        f"\n"
-        f"{message}"
-    )
-    
-    return base64.urlsafe_b64encode(message.encode("utf-8")).decode("utf-8")
 
 def create_event(sender, email_list, subject, message, timeRange, has_meet):
     formatted_sender = formataddr((str(Header('KOSS IIT Kharagpur', 'utf-8')), sender))
