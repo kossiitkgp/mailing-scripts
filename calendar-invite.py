@@ -17,9 +17,9 @@ from templates.variable_mappings import variable_column_mapping
 # Help and number of argument passed checker
 if len(sys.argv) < 5:
     #DONT USE <LOBBY LINK VARIABLE>
-    print("USAGE: python3 calender-invite.py <template_file> <csv_file> <include_meet> <slot_time> (OPTIONAL)<variables_with_same_value_for_all_mails>")
-    print('python3 calender-invite.py selections/onboarding onboarding.csv YES slot_time="Tuesday, 3 June 2023, 10:00 PM - 11:00 PM"')
-    print("python3 calender-invite.py selections/onboarding onboarding.csv NO slot_time='Tuesday, 2 February 2030, 8:00 AM - 1:00 PM' number_of_applicants='250+'")
+    print("USAGE: python3 calendar-invite.py <template_file> <csv_file> <include_meet> <slot_time> (OPTIONAL)<variables_with_same_value_for_all_mails>")
+    print('python3 calendar-invite.py selections/onboarding onboarding.csv YES slot_time="Tuesday, 3 June 2023, 10:00 PM - 11:00 PM"')
+    print("python3 calendar-invite.py selections/onboarding onboarding.csv NO slot_time='Tuesday, 2 February 2030, 8:00 AM - 1:00 PM' number_of_applicants='250+'")
     sys.exit(1)
     
 # If modifying SCOPES, delete the file token.json.
@@ -212,7 +212,7 @@ def main(subject_template, email_body_template, signature):
 
             emailList.append(email)
 
-    # Calender invites cannot have personalised details
+    # calendar invites cannot have personalised details
     email_body = email_body_template 
     subject = subject_template
 
