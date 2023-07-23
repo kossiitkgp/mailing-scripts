@@ -1,0 +1,13 @@
+<b>KWoC 2023<b> : Mid-Evaluation Reminder!!
+
+Dear Participant,<br><br>
+
+Exciting times are ahead as we approach the mid-evaluation phase of Kharagpur Winter of Code (KWoC) 2023! Your journey so far has been remarkable, and we can't wait to see the progress you've made.<br><br>
+
+This is to remind you about the upcoming mid-evaluation for the project. Please ensure to submit your report by <b>{mid_eval_date}<b>, covering completed tasks and current status.<br><br>
+
+Thank you for your dedication and hard work, we look forward to review your mid-evaluation report.<br><br>
+
+<em>Keep up the excellent work, and let's make this mid-evaluation a success to remember!<em>
+
+

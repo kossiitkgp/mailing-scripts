@@ -1,0 +1,12 @@
+KWoC 2023 : Final Evaluation Reminder!!
+
+Dear Participant,<br><br>
+
+We hope this email finds you well. Your hard work and dedication throughout the program have been truly commendable, and we greatly appreciate the efforts you have put into the project<br><br>
+
+This is to remind you that the final evaluation deadline for the project in the <b>Kharagpur Winter of Code (KWoC)<b> program is fast approaching.<br><br>
+
+Please submit your report by {end_eval_date}, highlighting your progress, achievements, challenges, and suggestions.<br><br>
+
+We're excited to read your report and learn about the incredible journey you've been on during KWoC.
+
