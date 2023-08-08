@@ -2,11 +2,11 @@ KWoC is back!! : It's time for another exciting coding journey
 
 Hello,<br><br>
 
-We hope this email finds you well. We are thrilled to announce that <b>Kharagpur Winter of Code<b> is back this year, and we would like to invite you to be part of this amazing coding extravaganza once again!!<br><br>
+We hope this email finds you well. We are thrilled to announce that <b>Kharagpur Winter of Code<b> is back this year, and We would like to invite you to be part of this amazing coding extravaganza once again!!<br><br>
 
 Your active involvement in previous editions of KWOC has contributed significantly to its success, and we genuinely appreciate your dedication.<br><br>
 
-<b>Mark your calenders for KWoC 2023 :<b><br><br>
+<b>Mark your calenders for KWoC {year} :<b><br><br>
 
 <i>Registrations for students as well as projects</i> : {date}
 <i>coding peroid</i>  : {start_date} to {end_date}<br><br>
