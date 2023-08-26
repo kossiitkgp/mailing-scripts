@@ -1,12 +1,11 @@
-KWoC : End-Evaluation Reminder!!
+<b>KWoC End-Evaluation Reminder</b>
 
 Dear Participant,<br><br>
 
-We hope this email finds you well. Your hard work and dedication throughout the program have been truly commendable, and we greatly appreciate the efforts you have put into the project<br><br>
+We hope this email finds you well. Your hard work and dedication throughout the program have been truly commendable, and we greatly appreciate the efforts you have put into the project.<br><br>
 
 This is to remind you that the end-evaluation deadline for <b>Kharagpur Winter of Code<b> program is fast approaching. The deadline for the end-evaluation is {end_eval_date}.<br><br>
 
+Don't forget to check your dashboard for the completion of end-evaluation process.<br><br>
+
 Once again, thank you for your active involvement in KWoC. Your contributions have been valuable in making this program a success.
-
-
-

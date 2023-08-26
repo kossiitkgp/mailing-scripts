@@ -1,13 +1,13 @@
-KWoC : Congratulations on Mid-Evaluation Success!
+KWoC: Congratulations on Mid-Evaluation Success!
 
 
 Dear participant,<br><br>
 
-Congratulations on your successful mid-evaluation for the project as part of the <b>Kharagpur Winter of Code (KWoC)<b> program!<br><br> 
+Congratulations on completing your mid-evaluation in <b>Kharagpur Winter of Code (KWoC){year}<b> program!<br><br> 
 
 Your hard work and dedication have truly paid off, and we are thrilled with your achievements.<br><br>
 
-Thank you for your valuable contributions to the project's progress. Your efforts have been outstanding, and we look forward to your continued excellence in the upcoming phases of the KWoC program.
+Thank you for your valuable contributions to the project's progress. Your efforts have been outstanding, and we look forward to your continued excellence in the upcoming phases of the program.
 
 <em>Keep up the fantastic work!<em><br><br>
 

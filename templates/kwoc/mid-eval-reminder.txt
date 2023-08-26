@@ -1,4 +1,4 @@
-<b>KWoC <b> : Mid-Evaluation Reminder!!
+<b>KWoC: Mid-Evaluation Reminder!!</b>
 
 Dear Participant,<br><br>
 
@@ -6,6 +6,5 @@ Exciting times are ahead as we approach the mid-evaluation phase of Kharagpur Wi
 
 This is to remind you about the upcoming mid-evaluation, which is scheduled to take place on {mid_eval_date}.<br><br>
 
+Don't forget to check your dashboard for the completion of mid-evaluation process.<br><br>
 <em>Keep up the excellent work, and let's make this mid-evaluation a success to remember!<em>
-
-
