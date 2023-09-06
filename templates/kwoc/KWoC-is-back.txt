@@ -13,4 +13,7 @@ Your active involvement in previous editions of KWoC has contributed significant
 
 Stay tuned to our website and social media channels for updates on project selection, mentors, and other important announcements.<br><br>
 
-We eagerly anticipate your participation in KWoC {year}. Let's make this edition even more remarkable!
+We eagerly anticipate your participation in KWoC {year}. Let's make this edition even more remarkable!<br><br>
+
+<i>Join our community on Discord</i>: {kwoc_discord_link}
+<i>Connect with us on Slack</i>: {kwoc_slack_link}
