@@ -2,9 +2,9 @@
 
 Dear Participant,<br><br>
 
-Exciting times are ahead as we approach the mid-evaluation deadline of Kharagpur Winter of Code! Your journey so far has been remarkable, and we can't wait to see the progress you've made.<br><br>
+Exciting times are ahead as we approach the mid-evaluation of Kharagpur Winter of Code! Your journey so far has been remarkable, and we can't wait to see the progress you've made.<br><br>
 
-This is to remind you about the upcoming mid-evaluation, which is scheduled to take place on {mid_eval_date}.<br><br>
+This is to remind you that the deadline to complete your mid-evaluation requirements is on {mid_eval_date}.<br><br>
 
-Don't forget to check your dashboard for the completion of mid-evaluation process.<br><br>
+Don't forget to check your dashboard to check if you have completed your mid-evaluation requirements.<br><br>
 <em>Keep up the excellent work, and let's make this mid-evaluation a success to remember!<em>
