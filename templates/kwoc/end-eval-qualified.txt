@@ -1,14 +1,13 @@
-KWoC: End-Evaluation Result
+<b>KWoC: End-Evaluation Result</b>
 
 Dear participant,<br><br>
 
-We hope this message finds you in good spirits. We're delighted to inform you that you have successfully passed the end evaluations of the Kharagpur Winter of Code {year}.<br><br>
+We're delighted to inform you that you have successfully passed the end evaluations of the Kharagpur Winter of Code {year}.<br><br>
 
-Your patience and dedication during this evaluation phase have not gone unnoticed. The evaluation process was challenging, and we admire your hard work and dedication in contributing to KWoC.<br><br>
+Your patience and dedication during this evaluation phase have not gone unnoticed. The evaluation process was challenging, and we admire your hard work.<br><br>
 
 Once again, congratulations on your successful completion of the Kharagpur Winter of Code. We extend our best wishes for your upcoming pursuits<br><br>
 
 Please find your certificate here: {certificate_link}<br><br>
 
 <em>We eagerly look forward to your participation in KWoC next year as well!</em>
-

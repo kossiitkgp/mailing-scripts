@@ -1,11 +1,10 @@
-KWoC: Congratulations on Mid-Evaluation Success!
-
+<b>KWoC: Mid-Evaluation Result</b>
 
 Dear participant,<br><br>
 
-Congratulations on completing your mid-evaluation in <b>Kharagpur Winter of Code (KWoC){year}<b> program!<br><br> 
+Congratulations on completing your mid-evaluation in <b>Kharagpur Winter of Code (KWoC) {year}<b> program!<br><br>
 
-Your hard work and dedication have truly paid off, and we are thrilled with your achievements.<br><br>
+Your hard work and dedication have paid off, and we are thrilled with your achievements.<br><br>
 
 Thank you for your valuable contributions to the project's progress. Your efforts have been outstanding, and we look forward to your continued excellence in the upcoming phases of the program.
 

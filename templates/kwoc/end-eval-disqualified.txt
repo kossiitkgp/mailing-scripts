@@ -1,8 +1,8 @@
-KWoC: End-Evaluation Result
+<b>KWoC: End-Evaluation Result</b>
 
 Dear participant,<br><br>
 
-We regret to inform you that your contributions in KWoC were not up to the mark. We appreciate your active participation in the Kharagpur Winter of Code (KWoC) program. Your efforts have not gone unnoticed, and we value your dedication to open source development.<br><br>
+We regret to inform you that your contributions in KWoC were not up to the mark. We appreciate your active participation in the Kharagpur Winter of Code (KWoC) program. Your efforts have not gone unnoticed, and we value your dedication to open-source development.<br><br>
 
 While this time's contributions didn't fully meet expectations, we see it as an opportunity for growth. Consider rejoining next year - your dedication is invaluable.<br><br>
 
