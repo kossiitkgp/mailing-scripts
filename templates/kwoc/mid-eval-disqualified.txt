@@ -1,9 +1,0 @@
-<b>KWoC: Mid-Evaluation Result</b>
-
-Dear Participant,<br><br>
-
-We regret to inform you that you did not advance to the next phase of the Kharagpur Winter of Code {year} program.<br><br>
-
-We appreciate the effort and dedication you have put into the program. While the outcome may be disappointing, remember that obstacles are part and parcel of every journey. Keep embracing your coding journey with the same enthusiasm and curiosity.<br><br>
-
-<em>We wish you success in all of your upcoming endeavors.</em>
