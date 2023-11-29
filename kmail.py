@@ -34,7 +34,7 @@ else:
 affair = sys.argv[2].split("/")[0].strip(" ")
 
 # Various files being used
-template_file = "./templates/" + sys.argv[2]
+template_file = "./templates/" + sys.argv[2] + ".html"
 csv_file = "./csv/" + sys.argv[3]
 signature_file = "./templates/signature"
 

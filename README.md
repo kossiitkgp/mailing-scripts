@@ -42,14 +42,14 @@ python3 kmail.py bcc selections/round2-interview-slot r2d2.csv slot_time="Tuesda
 #### KWoC
 
 ```bash
-python3 kmail.py oto kwoc/project_approval.html approved_projects.csv year="2023" mentor_manual_link="https://drive.google.com/file/d/1qNl6RGQ6dnkFu20L3LwC4bcBFOOpd_vV/view"
-python3 kmail.py oto kwoc/project_rejection.html rejected_projects.csv year="2023"
-python3 kmail.py bcc kwoc/mid_eval_reminder.html students.csv year="2023" mid_eval_date="December 26th, 2023"
-python3 kmail.py bcc kwoc/mid_eval_qualified.html students_qualified_mid_evals.csv year="2023"
-python3 kmail.py bcc kwoc/mid_eval_disqualified.html students_disqualified_mid_evals.csv year="2023"
-python3 kmail.py bcc kwoc/end_eval_reminder.html students_qualified_mid_evals.csv year="2023" end_eval_date="January 9th, 2023"
-python3 kmail.py bcc kwoc/end_eval_qualified.html students_qualified_end_evals.csv year="2023"
-python3 kmail.py bcc kwoc/end_eval_disqualified.html students_disqualified_end_evals.csv year="2023"
+python3 kmail.py oto kwoc/project_approval approved_projects.csv year="2023" mentor_manual_link="https://drive.google.com/file/d/1qNl6RGQ6dnkFu20L3LwC4bcBFOOpd_vV/view"
+python3 kmail.py oto kwoc/project_rejection rejected_projects.csv year="2023"
+python3 kmail.py bcc kwoc/mid_eval_reminder students.csv year="2023" mid_eval_date="December 26th, 2023"
+python3 kmail.py bcc kwoc/mid_eval_qualified students_qualified_mid_evals.csv year="2023"
+python3 kmail.py bcc kwoc/mid_eval_disqualified students_disqualified_mid_evals.csv year="2023"
+python3 kmail.py bcc kwoc/end_eval_reminder students_qualified_mid_evals.csv year="2023" end_eval_date="January 9th, 2023"
+python3 kmail.py bcc kwoc/end_eval_qualified students_qualified_end_evals.csv year="2023"
+python3 kmail.py bcc kwoc/end_eval_disqualified students_disqualified_end_evals.csv year="2023"
 ```
 
 ### Generating token for GMail enabled googleapi
