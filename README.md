@@ -19,17 +19,17 @@ Automates the mailing process for KOSS during various events like KWoC and selec
 
     Hence no need to mention them again while specifying the location, just speciy the location after these default directories.
 
-4. Use the script according to your needs, `bcc.py` or `one-to-one.py`. Both follow same method of execution
+4. Use the script according to your needs, `kmail.py`.
 
     ```bash
-    python3 script.py <template> <csv_file> (OPTIONAL)<variables with same value for all mails>
+    python3 kmail.py <bcc/oto> <template> <csv_file> (OPTIONAL)<variables with same value for all mails>
     ```
 
 ### Executing the scripts
 
 Here is one example for each of the supported cases:
 
-#### Selection
+#### Selections
 
 ```bash
 python3 kmail.py oto selections/onboarding onboarding.csv number_of_applicants="250+"
@@ -56,9 +56,9 @@ python3 kmail.py bcc kwoc/end_eval_disqualified.html students_disqualified_end_e
 
 1. Follow the steps at [Gmail API - Python Quickstart](https://developers.google.com/gmail/api/quickstart/python) guide to get `credentials.json`.
 
-   > [!Note] 
-   > `credentials.json` is permanent until you delete it in your google clound console.<br>
-   > And make sure to add `admin@kossiitkgp.org` as a test user in case you made the app internal.
+  > [!Note] 
+  > `credentials.json` is permanent until you delete it in your google clound console.<br>
+  > And make sure to add `admin@kossiitkgp.org` as a test user in case you made the app internal.
 
 2. Follow the steps below to generate `token.json`:
     - Download [gentokenjson.py](https://gist.github.com/proffapt/adbc716a427c036f238e828d8995e1a3) in the same folder containing `credentials.json`
@@ -80,5 +80,5 @@ python3 kmail.py bcc kwoc/end_eval_disqualified.html students_disqualified_end_e
        - Then press `Continue` again
     - `token.json` will be generated in same folder as that of `credentials.json`
   
-    > [!Warning] 
-    > `token.json` expires after sometime. So make sure to check that in your projects and keep refreshing it.
+  > [!Warning]
+  > `token.json` expires after sometime. So make sure to check that in your projects and keep refreshing it.
