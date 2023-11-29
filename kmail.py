@@ -44,6 +44,14 @@ with open(template_file, "r") as file:
     subject_template = file.readline().strip()
     lines = file.readlines()[1:]  # Slice the list starting from index 2 (line number 3)
 email_body_template = "".join(lines)
+if affair == "kwoc":
+    core_template_file = "./templates/kwoc/core_template.html"
+    with open(core_template_file, "r") as file:
+        core_template = file.read()
+
+    core_template_parts = core_template.split("<!-- *** -->") # The core template has to have it at the place of body content
+    email_body_template = core_template_parts[0] + email_body_template + core_template_parts[1]
+
 # Getting signature
 with open(signature_file) as file:
     signature = file.read()
@@ -161,10 +169,10 @@ def main(subject_template, email_body_template, signature):
             sender = "admin@kossiitkgp.org"  # Replace with your email address
             bcc = ", ".join(emails)  # Join the emails with commas for BCC
             if affair != "kwoc":
-                email_content = email_body + signature
+                email_content = email_body_template + signature
             else: 
-                email_content = email_body
-            message = create_message(sender, "", bcc, subject, email_content)  # Set "to" as an empty string
+                email_content = email_body_template
+            message = create_message(sender, "", bcc, subject_template, email_content)  # Set "to" as an empty string
             send_message(service, "me", {"raw": message})
             print(f"Email sent to {len(emails)} recipients as BCC.")
 
