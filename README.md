@@ -16,11 +16,16 @@ Automates the mailing process for KOSS during various events like KWoC and selec
     - Templates files must be stored in `./templates/`.
     - CSV files must be stored in `./csv/`, 
 
-    Hence no need to mention them again while specifying the location, just speciy the location after these default directories.
+    Hence no need to mention them again while specifying the location, just specify the location after these default directories.
 
 4. Use the script according to your needs, `bcc.py` or `one-to-one.py`. Both follow same method of execution
     ```bash
     python3 script.py <template> <csv_file> (OPTIONAL)<variables with same value for all mails>
+    ```
+
+5. Use the `calendar-invite` script to mail a calendar invite for an event. Do not use templates with personalised variables for each email. Do not include a lobby link as it will be auto generated.
+    ```bash
+    python3 calendar-invite.py <template_file> <csv_file> <include_meet> <slot_time> (OPTIONAL)<variables_with_same_value_for_all_mails>
     ```
     
 ### Executing the scripts
@@ -33,6 +38,8 @@ python3 one-to-one.py selections/task day1.csv deadline="Monday, 9 June 2023"
 python3 bcc.py selections/rejection rejected.csv
 python3 bcc.py selections/round1-interview-slot r1d1.csv slot_time="Tuesday, 3 June 2023, 10:00 PM - 11:00 PM" lobby_link="https://meet.google.com/xxx-xxxx-xxx"
 python3 bcc.py selections/round2-interview-slot r2d2.csv slot_time="Tuesday, 3 June 2023, 10:00 PM - 11:00 PM" lobby_link="https://meet.google.com/xxx-xxxx-xxx"
+python3 calendar-invite.py selections/onboarding onboarding.csv YES slot_time="Tuesday, 3 June 2023, 10:00 PM - 11:00 PM"
+python3 calendar-invite.py selections/onboarding onboarding.csv NO slot_time='Tuesday, 2 February 2030, 8:00 AM - 1:00 PM number_of_applicants='250+'
 ```
 
 ### Generating token for GMail enabled googleapi
