@@ -53,8 +53,10 @@ def create_message(sender, to, subject, message):
 def send_message(service, user_id, message):
     try:
         message = service.users().messages().send(userId=user_id, body=message).execute()
+        return message
     except Exception as e:
         print(f"An error occurred while sending the message: {e}")
+        return None
 
 def fill_variables(content, variables):
     for variable, value in variables.items():
@@ -124,8 +126,10 @@ def main(subject_template, email_body_template, signature):
             sender = "admin@kossiitkgp.org"
             email_content = email_body + signature
             message = create_message(sender, email, subject, email_content)
-            send_message(service, "me", {"raw": message})
-            print(f'Message sent to: {email}')
+            if send_message(service, "me", {"raw": message}):
+                print(f'Message sent to: {email}')
+            else:
+                print(f'Failed to send message to: {email}')
 
     print("Script execution completed.")
 
