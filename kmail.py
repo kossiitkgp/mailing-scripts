@@ -140,7 +140,7 @@ def main(subject_template, email_body_template, signature):
                         break
             
             # Getting Project Name from the URL itself
-            if variables["project_link"]:
+            if "project_link" in variables:
                 variables["project_name"] = variables["project_link"].split("/")[-1].strip(" ").title()
 
             email = variables['email'].strip()
