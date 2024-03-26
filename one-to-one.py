@@ -13,158 +13,289 @@ from google.auth.transport.requests import Request
 from templates.variable_mappings import variable_column_mapping
 from tkinter import *
 from tkhtmlview import HTMLLabel
-from tkinterweb import HtmlFrame 
+from tkinterweb import HtmlFrame
+from tkinter import filedialog
 
 
-# Help and number of argument passed checker
-if len(sys.argv) < 3:
-    print("USAGE: python3 one-to-one.py <template_file> <csv_file> (OPTIONAL)<variables_with_same_value_for_all_mails>")
-    print("python3 one-to-one.py selections/onboarding onboarding.csv")
-    print("python3 one-to-one.py selections/onboarding onboarding.csv number_of_applicants='250+'")
-    sys.exit(1)
-    
 # If modifying SCOPES, delete the file token.json.
-SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
+class EmailSender:
+    def __init__(self):
+        self.root = Tk()
+        self.variables = {}
+        self.variables_frame = None
+        self.ok = False
+        self.template_file = None
+        self.csv_file = None
+        self.subject_template = ""
+        self.email_body_template = ""
+        self.signature = ""
+        self.SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
+        self.service = None
+        self.row = {}
 
+    def select_csv_file(self):  # filedialog for selecting CSV file
+        csv_file_path = filedialog.askopenfilename(title="Select CSV File")
+        self.csv_file_entry.delete(0, END)
+        self.csv_file_entry.insert(0, csv_file_path)
 
-root = Tk()
-ok = False # variable to check whether mail content is alright
+    def select_template_file(self):  # filedialog for selecting CSV file
+        template_file_path = filedialog.askopenfilename(
+            title="Select Template File")
+        self.template_file_entry.delete(0, END)
+        self.template_file_entry.insert(0, template_file_path)
 
-def command_ok(): # command for ok button UI
-    global ok
-    ok = True
-    root.quit()
+    def command_ok(self):  # command for ok button mail frame
+        self.ok = True
+        self.mail_frame.quit()
 
-def command_cancel(): # command for cancel button UI
-    global ok
-    root.quit()
-    ok = False
+    def command_cancel(self):  # command for cancel button mail frame
+        self.ok = False
+        self.mail_frame.destroy()
 
-# Various files being used
-template_file = "./templates/" + sys.argv[1]
-csv_file = "./csv/" + sys.argv[2]
-signature_file = "./templates/signature"
+    def command_cancel_load(self):  # command for cancel button main frame
+        self.load = False
+        self.root.destroy()
 
-# Getting subject and mail body
-lines = []
-with open(template_file, "r") as file:
-    subject_template = file.readline().strip()
-    lines = file.readlines()[1:]  # Slice the list starting from index 2 (line number 3)
-email_body_template = "".join(lines)
-# Getting signature
-with open(signature_file) as file:
-    signature = file.read()
+    def create_message(self, sender, to, subject, message):
+        formatted_sender = formataddr(
+            (str(Header('KOSS IIT Kharagpur', 'utf-8')), sender))
+        message = (
+            f"From: {formatted_sender}\n"
+            f"To: {to}\n"
+            f"Subject: {subject}\n"
+            f"MIME-Version: 1.0\n"
+            f"Content-Type: text/html; charset=utf-8\n"
+            f"\n"
+            f"{message}"
+        )
+        return base64.urlsafe_b64encode(message.encode("utf-8")).decode("utf-8")
 
-def create_message(sender, to, subject, message):
-    formatted_sender = formataddr((str(Header('KOSS IIT Kharagpur', 'utf-8')), sender))
-    message = (
-        f"From: {formatted_sender}\n"
-        f"To: {to}\n"
-        f"Subject: {subject}\n"
-        f"MIME-Version: 1.0\n"
-        f"Content-Type: text/html; charset=utf-8\n"
-        f"\n"
-        f"{message}"
-    )
-    return base64.urlsafe_b64encode(message.encode("utf-8")).decode("utf-8")
+    # Refresh the user variables if another template is loaded
+    def destroy_variables_frame(self):
+        if self.variables_frame:
+            self.variables_frame.destroy()
 
-def send_message(service, user_id, message):
-    try:
-        message = service.users().messages().send(userId=user_id, body=message).execute()
-    except Exception as e:
-        print(f"An error occurred while sending the message: {e}")
+    def send_message(self, user_id, message):
+        try:
+            message = self.service.users().messages().send(
+                userId=user_id, body=message).execute()
+        except Exception as e:
+            print(f"An error occurred while sending the message: {e}")
 
-def fill_variables(content, variables):
-    for variable, value in variables.items():
-        placeholder = "{" + variable + "}"
-        content = content.replace(placeholder, value)
+    def fill_variables(self, content, variables):  # replace the variables in template
+        for variable, value in variables.items():
+            placeholder = "{" + variable + "}"
+            content = content.replace(placeholder, value)
 
-    return content 
+        for variable, value in self.variables.items(): # replace user input variables if exists
+            placeholder = "{" + variable + "}"
+            content = content.replace(placeholder, value.get())
 
-def validate_email(email):
-    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-    if re.match(pattern, email):
-        return True
-    else:
-        return False
+        return content
 
-def main(subject_template, email_body_template, signature):
-    creds = None
-    
+    def validate_email(self, email):
+        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        return bool(re.match(pattern, email))
 
-    if os.path.exists("token.json"):
-        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
+    def load_files(self):  # command for load button main frame
+        self.get_csv_variables()
+        self.display_missing_variables()
+        self.load = True
 
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                "credentials.json", SCOPES
-            )
-            creds = flow.run_local_server(port=0)
-        with open("token.json", "w") as token:
-            token.write(creds.to_json())
-
-    service = build("gmail", "v1", credentials=creds)
-    
-    # Getting extra static variables(those which are same for all mails) if required by the template - from arguments
-    if len(sys.argv) > 2:
-        variables = {}
-        for arg in sys.argv[3:]:
-            variable, value = arg.split("=")
-            variables[variable] = value.strip()
-            
-        email_body_template = fill_variables(email_body_template, variables)
-        subject_template = fill_variables(subject_template, variables)
-
-    with open(csv_file, newline="") as file:
-        reader = csv.DictReader(file)
-        num = False # variable to index the first mail
-
-        for row in reader:
-            # Getting unique variables values - from the CSV file
-            required_columns = set([column for variables in variable_column_mapping.values() for column in variables if column in row])
-
-            variables = {}
+    # get variables from csv that are in the template and matches variable_column_mapping
+    def get_csv_variables(self):
+        with open(self.csv_file_entry.get(), newline="") as file:
+            reader = csv.DictReader(file)
+            self.row = next(iter(reader))
+            required_columns = set([column for variables in variable_column_mapping.values()
+                                     for column in variables if column in self.row])
+            self.csv_variables = {}
             for variable, columns in variable_column_mapping.items():
                 for column in columns:
                     if column in required_columns:
-                        variables[variable] = row.get(column, "").strip()
+                        self.csv_variables[variable] = self.row.get(
+                            column, "").strip()
                         break
-                    
-            email = variables['email'].strip()
-            if not validate_email(email):
-                print(f'Invalid mail provided: {email}')
-                continue
 
-            email_body = fill_variables(email_body_template, variables)
-            subject = fill_variables(subject_template, variables)
-            
+    def load_variables(self):  # get variables from template
+        with open(self.template_file, "r") as template_file:
+            template_content = template_file.read()
+            placeholders = re.findall(r'\{(.*?)\}', template_content)
+            self.variables = {placeholder: "" for placeholder in placeholders}
+
+    def send_emails(self):
+        self.template_file = self.template_file_entry.get()
+        self.csv_file = self.csv_file_entry.get()
+
+        with open(self.template_file, "r") as file:
+            self.subject_template = file.readline().strip()
+            self.email_body_template = "".join(file.readlines()[1:])
+
+        with open("./templates/signature") as file:
+            self.signature = file.read()
+
+        creds = None
+
+        if os.path.exists("token.json"):
+            creds = Credentials.from_authorized_user_file(
+                "token.json", self.SCOPES)
+
+        if not creds or not creds.valid:
+            if creds and creds.expired and creds.refresh_token:
+                creds.refresh(Request())
+            else:
+                flow = InstalledAppFlow.from_client_secrets_file(
+                    "credentials.json", self.SCOPES)
+                creds = flow.run_local_server(port=0)
+            with open("token.json", "w") as token:
+                token.write(creds.to_json())
+
+        self.service = build("gmail", "v1", credentials=creds)
+
+        with open(self.csv_file, newline="") as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                required_columns = set([column for variables in variable_column_mapping.values(
+                ) for column in variables if column in row])
+
+                variables = {}
+                for variable, columns in variable_column_mapping.items():
+                    for column in columns:
+                        if column in required_columns:
+                            variables[variable] = row.get(column, "").strip()
+                            break
+
+                email = variables.get('email', "").strip()
+                if not self.validate_email(email):
+                    print(f'Invalid email provided: {email}')
+                    continue
+
+                email_body = self.fill_variables(
+                    self.email_body_template, variables)
+                subject = self.fill_variables(self.subject_template, variables)
+
+                sender = "admin@kossiitkgp.org"
+                email_content = email_body + self.signature
+                message = self.create_message(
+                    sender, email, subject, email_content)
+
+                self.send_message("me", {"raw": message})
+                print(f'Message sent to: {email}')
+
+    # display initial mail to confirm the execution
+    def display_initial_mail(self):
+        self.csv_file = self.csv_file_entry.get()
+        self.template_file = self.template_file_entry.get()
+        with open("./templates/signature") as file:
+            self.signature = file.read()
+
+        with open(self.template_file, "r") as file:
+            self.subject_template = file.readline().strip()
+            self.email_body_template = "".join(file.readlines()[1:])
+        with open(self.csv_file, newline="") as file:
+            reader = csv.DictReader(file)
+            self.row = next(iter(reader))
+
+            email = self.csv_variables.get('email', "").strip()
+
+            email_body = self.fill_variables(
+                self.email_body_template, self.csv_variables)
+            subject = self.fill_variables(
+                self.subject_template, self.csv_variables)
+
             sender = "admin@kossiitkgp.org"
-            email_content = email_body + signature
-            message = create_message(sender, email, subject, email_content)
-            
-            if num==False: # only view the first mail when executing
-                myhtmlframe = HtmlFrame(root,messages_enabled = False)
-                myhtmlframe.load_html(email_content) 
-                myhtmlframe.grid(row=0,column=0) 
-                button_ok = Button(root,text = 'OK' , command=command_ok, background='#45f775')
-                button_ok.grid(row = 1,column=0)
-                l = Label(root,text='')
-                l.grid(row=2,column=0)
-                button_cancel = Button(root, text = 'Cancel',command=command_cancel,background='#c73243')
-                button_cancel.grid(row=3,column=0)
-                root.mainloop()
-                num = True
-            
-            if ok==False: # cancel the execution if mail content is not right
-                break
+            email_content = email_body + self.signature
+            message = self.create_message(
+                sender, email, subject, email_content)
+            self.mail_frame = Tk()
+            self.mail_frame.title("Mail Content")
+            myhtmlframe = HtmlFrame(self.mail_frame, messages_enabled=False)
+            myhtmlframe.load_html(email_content)
+            myhtmlframe.pack(side=RIGHT)
+            button_ok = Button(self.mail_frame, text='OK',
+                               command=self.command_ok, background='#45f775')
+            button_ok.pack()
+            label = Label(self.mail_frame, text='')
+            label.pack()
+            button_cancel = Button(
+                self.mail_frame, text='Cancel', command=self.command_cancel, background='#c73243')
+            button_cancel.pack()
+            self.mail_frame.mainloop()
+            self.command_ok()
 
-            send_message(service, "me", {"raw": message})
-            print(f'Message sent to: {email}')
+    def display_missing_variables(self): # get user variables
+        self.destroy_variables_frame() 
+        self.variables_frame = Frame(self.root)
+        self.variables_frame.pack()
 
-    print("Script execution completed.")
+        label = Label(self.variables_frame, text="", pady=5)
+        label.pack()
+
+        self.template_file = self.template_file_entry.get()
+        if self.template_file:
+            with open(self.template_file, "r") as template_file:
+                template_content = template_file.read()
+                placeholders = re.findall(r'\{(.*?)\}', template_content)
+                placeholders = set(placeholders)
+                for variable in placeholders:
+                    if variable not in self.csv_variables:
+                        label = Label(self.variables_frame, text=variable)
+                        label.pack()
+                        entry = Entry(self.variables_frame)
+                        entry.pack()
+                        self.variables[variable] = entry
+
+        button_continue = Button(self.variables_frame, text='Continue',
+                                 command=self.continue_after_variables, background='#45f775')
+        button_continue.pack()
+
+    # command for continue button after loading user variables
+    def continue_after_variables(self):
+        if all(entry.get() for entry in self.variables.values()):
+            self.root.quit()
+            self.load = True
+            self.display_initial_mail()
+        else:
+            print("Please fill all required variables.")
+
+    def main(self):
+        # Initalizing UI window -- START
+        self.root.title("Email Script")
+
+        select_csv_button = Button(self.root, text="Select CSV File",
+                                   command=self.select_csv_file, bg='#007bff', fg='white')
+        select_csv_button.pack()
+
+        self.csv_file_entry = Entry(self.root, width=50)
+        self.csv_file_entry.pack()
+
+        select_template_button = Button(
+            self.root, text="Select Template File", command=self.select_template_file, bg='#007bff', fg='white')
+        select_template_button.pack()
+
+        self.template_file_entry = Entry(self.root, width=50)
+        self.template_file_entry.pack()
+
+        button_load = Button(self.root, text='Load',
+                             command=self.load_files, background='#45f775')
+        button_load.pack()
+
+        label = Label(self.root, text='')
+        label.pack(side='top')
+
+        button_cancel = Button(
+            self.root, text='Cancel', command=self.command_cancel_load, background='#c73243')
+        button_cancel.pack()
+
+        self.root.mainloop()
+        # initializing UI Window -- END
+
+        if self.load and self.ok:
+            self.send_emails()  # send mails
+
+        print("Script execution completed.")
+
 
 if __name__ == "__main__":
-    main(subject_template, email_body_template, signature)
+    email_sender = EmailSender()
+    email_sender.main()
