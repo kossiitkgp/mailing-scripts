@@ -371,7 +371,8 @@ class EmailSender:
         self.template_file_entry_calendar = Entry(
             self.calendar_frame, width=50)
         self.template_file_entry_calendar.pack()
-        label = Label(self.calendar_frame, text=' ')
+
+        label = Label(self.calendar_frame, text='Note: Input date and time in exact format',pady=10)
         label.pack()
 
         self.start_frame = Frame(self.calendar_frame)
