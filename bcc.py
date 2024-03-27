@@ -11,6 +11,11 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from templates.variable_mappings import variable_column_mapping
+from tkinter import *
+from tkhtmlview import HTMLLabel
+from tkinterweb import HtmlFrame 
+
+
 
 # Help and number of argument passed checker
 if len(sys.argv) < 3:
@@ -21,6 +26,20 @@ if len(sys.argv) < 3:
     
 # If modifying SCOPES, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
+
+root = Tk()
+ok = False # variable to check whether mail content is alright
+
+def command_ok(): # command for ok button UI
+    global ok
+    ok = True
+    root.quit()
+
+def command_cancel(): # command for cancel button UI
+    global ok
+    root.quit()
+    ok = False
+
 
 # Various files being used
 template_file = "./templates/" + sys.argv[1]
@@ -102,7 +121,6 @@ def main(subject, email_body, signature):
 
     with open(csv_file, newline="") as f:
         reader = csv.DictReader(f)
-        
         emails = []  # List to store the email addresses for BCC
 
         for row in reader:
@@ -127,11 +145,27 @@ def main(subject, email_body, signature):
         # Create a single message with BCC recipients
         sender = "admin@kossiitkgp.org"  # Replace with your email address
         bcc = ", ".join(emails)  # Join the emails with commas for BCC
-        email_content = email_body + signature
-        message = create_message(sender, "", bcc, subject, email_content)  # Set "to" as an empty string
-        send_message(service, "me", {"raw": message})
-        print(f"Email sent to {len(emails)} recipients as BCC.")
+        email_content = email_body + signature 
+        myhtmlframe = HtmlFrame(root,messages_enabled = False)
+        myhtmlframe.load_html(email_content) 
+        myhtmlframe.grid(row=0,column=0) 
+        button_ok = Button(root,text = 'OK' , command=command_ok, background='#45f775')
+        button_ok.grid(row = 1,column=0)
+        l = Label(root,text='')
+        l.grid(row=2,column=0)
+        button_cancel = Button(root, text = 'Cancel',command=command_cancel,background='#c73243')
+        button_cancel.grid(row=3,column=0)       
+        root.mainloop()
 
+        if ok==True:
+            message = create_message(sender, "", bcc, subject, email_content)  # Set "to" as an empty string
+            send_message(service, "me", {"raw": message})
+            print(f"Email sent to {len(emails)} recipients as BCC.")
+        
+        else:
+            print("Email not sent")
+
+        
     print("Script execution completed.")
 
 if __name__ == "__main__":
