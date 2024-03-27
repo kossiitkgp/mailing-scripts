@@ -15,44 +15,83 @@ from tkinter import *
 from tkhtmlview import HTMLLabel
 from tkinterweb import HtmlFrame
 from tkinter import filedialog
-
+from tkinter import ttk, messagebox
 
 # If modifying SCOPES, delete the file token.json.
+
+
 class EmailSender:
     def __init__(self):
         self.root = Tk()
+        self.root.protocol("WM_DELETE_WINDOW", self.on_close)
+        self.notebook = ttk.Notebook(self.root)  # Notebook widget
+        self.email_frame = Frame(self.notebook)  # Frame for sending emails
+        # Frame for sending calendar invites
+        self.calendar_frame = Frame(self.notebook)
+        self.notebook.add(self.email_frame, text='Send Emails')  # Adding tabs
+        self.notebook.add(self.calendar_frame, text='Send Calendar Invites')
+        self.notebook.pack(expand=1, fill='both')
         self.variables = {}
+        s = ttk.Style()
+        s.theme_create('custom_style', parent='alt', settings={
+            "TNotebook.Tab": {
+                "configure": {"padding": [5, 2], "background": "#608cab", "foreground": "#ffffff"},
+                "map": {"background": [("selected", "#0067b0")]}
+            }
+        })
+        s.theme_use('custom_style')
+
         self.variables_frame = None
+        self.load = False
         self.ok = False
+        self.is_calendar_invite = False
         self.template_file = None
         self.csv_file = None
         self.subject_template = ""
         self.email_body_template = ""
         self.signature = ""
-        self.SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
+        self.SCOPES = ["https://www.googleapis.com/auth/gmail.send",
+                       "https://www.googleapis.com/auth/calendar"]
         self.service = None
+        self.creds = None
         self.row = {}
+
+    def on_close(self):
+        if messagebox.askokcancel("Quit", "Do you want to quit?"):
+            self.root.destroy()
 
     def select_csv_file(self):  # filedialog for selecting CSV file
         csv_file_path = filedialog.askopenfilename(title="Select CSV File")
         self.csv_file_entry.delete(0, END)
         self.csv_file_entry.insert(0, csv_file_path)
 
-    def select_template_file(self):  # filedialog for selecting CSV file
+    def select_template_file(self):  # filedialog for selecting template file
         template_file_path = filedialog.askopenfilename(
             title="Select Template File")
         self.template_file_entry.delete(0, END)
         self.template_file_entry.insert(0, template_file_path)
 
-    def command_ok(self):  # command for ok button mail frame
+    def select_csv_file_calendar(self):  # filedialog for selecting CSV file
+        csv_file_path = filedialog.askopenfilename(title="Select CSV File")
+        self.csv_file_entry_calendar.delete(0, END)
+        self.csv_file_entry_calendar.insert(0, csv_file_path)
+
+    # filedialog for selecting template file
+    def select_template_file_calendar(self):
+        template_file_path = filedialog.askopenfilename(
+            title="Select Template File")
+        self.template_file_entry_calendar.delete(0, END)
+        self.template_file_entry_calendar.insert(0, template_file_path)
+
+    def command_ok(self):  # command for ok button mail frame (for initial mail)
         self.ok = True
         self.mail_frame.quit()
 
-    def command_cancel(self):  # command for cancel button mail frame
+    def command_cancel(self):  # command for cancel button mail frame (for initial mail)
         self.ok = False
         self.mail_frame.destroy()
 
-    def command_cancel_load(self):  # command for cancel button main frame
+    def command_cancel_load(self):  # command cancel
         self.load = False
         self.root.destroy()
 
@@ -87,7 +126,7 @@ class EmailSender:
             placeholder = "{" + variable + "}"
             content = content.replace(placeholder, value)
 
-        for variable, value in self.variables.items(): # replace user input variables if exists
+        for variable, value in self.variables.items():  # replace user input variables if exists
             placeholder = "{" + variable + "}"
             content = content.replace(placeholder, value.get())
 
@@ -99,23 +138,44 @@ class EmailSender:
 
     def load_files(self):  # command for load button main frame
         self.get_csv_variables()
-        self.display_missing_variables()
+        self.display_missing_variables(self.email_frame)
+        self.load = True
+
+    def load_files_calendar(self):  # command for load button main frame
+        self.get_csv_variables()
+        self.display_missing_variables(self.calendar_frame)
+        self.is_calendar_invite = True
         self.load = True
 
     # get variables from csv that are in the template and matches variable_column_mapping
     def get_csv_variables(self):
-        with open(self.csv_file_entry.get(), newline="") as file:
-            reader = csv.DictReader(file)
-            self.row = next(iter(reader))
-            required_columns = set([column for variables in variable_column_mapping.values()
-                                     for column in variables if column in self.row])
-            self.csv_variables = {}
-            for variable, columns in variable_column_mapping.items():
-                for column in columns:
-                    if column in required_columns:
-                        self.csv_variables[variable] = self.row.get(
-                            column, "").strip()
-                        break
+        if self.csv_file_entry.get():
+            with open(self.csv_file_entry.get(), newline="") as file:
+                reader = csv.DictReader(file)
+                self.row = next(iter(reader))
+                required_columns = set([column for variables in variable_column_mapping.values()
+                                        for column in variables if column in self.row])
+                self.csv_variables = {}
+                for variable, columns in variable_column_mapping.items():
+                    for column in columns:
+                        if column in required_columns:
+                            self.csv_variables[variable] = self.row.get(
+                                column, "").strip()
+                            break
+
+        elif self.csv_file_entry_calendar.get():
+            with open(self.csv_file_entry_calendar.get(), newline="") as file:
+                reader = csv.DictReader(file)
+                self.row = next(iter(reader))
+                required_columns = set([column for variables in variable_column_mapping.values()
+                                        for column in variables if column in self.row])
+                self.csv_variables = {}
+                for variable, columns in variable_column_mapping.items():
+                    for column in columns:
+                        if column in required_columns:
+                            self.csv_variables[variable] = self.row.get(
+                                column, "").strip()
+                            break
 
     def load_variables(self):  # get variables from template
         with open(self.template_file, "r") as template_file:
@@ -134,23 +194,9 @@ class EmailSender:
         with open("./templates/signature") as file:
             self.signature = file.read()
 
-        creds = None
+        self.get_credentials()
 
-        if os.path.exists("token.json"):
-            creds = Credentials.from_authorized_user_file(
-                "token.json", self.SCOPES)
-
-        if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-            else:
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    "credentials.json", self.SCOPES)
-                creds = flow.run_local_server(port=0)
-            with open("token.json", "w") as token:
-                token.write(creds.to_json())
-
-        self.service = build("gmail", "v1", credentials=creds)
+        self.service = build("gmail", "v1", credentials=self.creds)
 
         with open(self.csv_file, newline="") as file:
             reader = csv.DictReader(file)
@@ -183,9 +229,15 @@ class EmailSender:
                 print(f'Message sent to: {email}')
 
     # display initial mail to confirm the execution
-    def display_initial_mail(self):
-        self.csv_file = self.csv_file_entry.get()
-        self.template_file = self.template_file_entry.get()
+    def display_initial_mail(self, frame):
+        if (frame == self.email_frame):
+            self.csv_file = self.csv_file_entry.get()
+        elif (frame == self.calendar_frame):
+            self.csv_file = self.csv_file_entry_calendar.get()
+        if (frame == self.email_frame):
+            self.template_file = self.template_file_entry.get()
+        elif (frame == self.calendar_frame):
+            self.template_file = self.template_file_entry_calendar.get()
         with open("./templates/signature") as file:
             self.signature = file.read()
 
@@ -223,15 +275,18 @@ class EmailSender:
             self.mail_frame.mainloop()
             self.command_ok()
 
-    def display_missing_variables(self): # get user variables
-        self.destroy_variables_frame() 
-        self.variables_frame = Frame(self.root)
+    def display_missing_variables(self, frame):  # get user variables
+        self.destroy_variables_frame()
+        self.variables_frame = Frame(frame)
         self.variables_frame.pack()
 
         label = Label(self.variables_frame, text="", pady=5)
         label.pack()
 
-        self.template_file = self.template_file_entry.get()
+        if (frame == self.email_frame):
+            self.template_file = self.template_file_entry.get()
+        elif (frame == self.calendar_frame):
+            self.template_file = self.template_file_entry_calendar.get()
         if self.template_file:
             with open(self.template_file, "r") as template_file:
                 template_content = template_file.read()
@@ -246,54 +301,189 @@ class EmailSender:
                         self.variables[variable] = entry
 
         button_continue = Button(self.variables_frame, text='Continue',
-                                 command=self.continue_after_variables, background='#45f775')
+                                 command=lambda: self.continue_after_variables(frame), background='#45f775')
         button_continue.pack()
 
     # command for continue button after loading user variables
-    def continue_after_variables(self):
+    def continue_after_variables(self, frame):
         if all(entry.get() for entry in self.variables.values()):
             self.root.quit()
             self.load = True
-            self.display_initial_mail()
+            self.display_initial_mail(frame)
         else:
             print("Please fill all required variables.")
 
-    def main(self):
-        # Initalizing UI window -- START
-        self.root.title("Email Script")
-
-        select_csv_button = Button(self.root, text="Select CSV File",
+    def load_email_frame(self):
+        label = Label(self.email_frame, text='Send Mails',
+                      font=("Helvetica", "14"))
+        label.pack(side='top')
+        label = Label(self.email_frame, text='')
+        label.pack(side='top')
+        select_csv_button = Button(self.email_frame, text="Select CSV File",
                                    command=self.select_csv_file, bg='#007bff', fg='white')
         select_csv_button.pack()
 
-        self.csv_file_entry = Entry(self.root, width=50)
+        self.csv_file_entry = Entry(self.email_frame, width=50)
         self.csv_file_entry.pack()
 
         select_template_button = Button(
-            self.root, text="Select Template File", command=self.select_template_file, bg='#007bff', fg='white')
+            self.email_frame, text="Select Template File", command=self.select_template_file, bg='#007bff', fg='white')
         select_template_button.pack()
 
-        self.template_file_entry = Entry(self.root, width=50)
+        self.template_file_entry = Entry(self.email_frame, width=50)
         self.template_file_entry.pack()
 
-        button_load = Button(self.root, text='Load',
+        button_load = Button(self.email_frame, text='Load',
                              command=self.load_files, background='#45f775')
         button_load.pack()
 
-        label = Label(self.root, text='')
+        label = Label(self.email_frame, text='')
         label.pack(side='top')
 
         button_cancel = Button(
-            self.root, text='Cancel', command=self.command_cancel_load, background='#c73243')
+            self.email_frame, text='Cancel', command=self.command_cancel_load, background='#c73243')
         button_cancel.pack()
 
+    def load_calendar_frame(self):
+        label = Label(self.calendar_frame, text='Calendar Invite',
+                      font=("Helvetica", "14"))
+        label.pack(side='top')
+        label = Label(self.calendar_frame, text=' ')
+        label.pack(side='top')
+        select_csv_button = Button(self.calendar_frame, text="Select CSV File",
+                                   command=self.select_csv_file_calendar, bg='#007bff', fg='white')
+        select_csv_button.pack()
+
+        self.csv_file_entry_calendar = Entry(self.calendar_frame, width=50)
+        self.csv_file_entry_calendar.pack()
+
+        select_template_button_calendar = Button(
+            self.calendar_frame, text="Select Template File", command=self.select_template_file_calendar, bg='#007bff', fg='white')
+        select_template_button_calendar.pack()
+
+        self.template_file_entry_calendar = Entry(
+            self.calendar_frame, width=50)
+        self.template_file_entry_calendar.pack()
+
+        button_load_calendar = Button(self.calendar_frame, text='Load',
+                                      command=self.load_files_calendar, background='#45f775')
+        button_load_calendar.pack()
+
+        label_calendar = Label(self.calendar_frame, text='')
+        label_calendar.pack(side='top')
+
+        button_cancel = Button(
+            self.calendar_frame, text='Cancel', command=self.command_cancel_load, background='#c73243')
+        button_cancel.pack()
+
+    def main(self):
+        # Initalizing UI window -- START
+        self.get_credentials()
+        self.root.title("Email Script")
+        self.load_email_frame()
+        self.load_calendar_frame()
         self.root.mainloop()
         # initializing UI Window -- END
 
-        if self.load and self.ok:
+        if self.load and self.ok and not self.is_calendar_invite:
             self.send_emails()  # send mails
 
+        elif self.load and self.ok and self.is_calendar_invite:
+            self.create_event()
+
         print("Script execution completed.")
+
+    def get_credentials(self):
+        self.creds = None
+
+        if os.path.exists("token.json"):
+            self.creds = Credentials.from_authorized_user_file(
+                "token.json", self.SCOPES)
+
+        if not self.creds or not self.creds.valid:
+            if self.creds and self.creds.expired and self.creds.refresh_token:
+                self.creds.refresh(Request())
+            else:
+                flow = InstalledAppFlow.from_client_secrets_file(
+                    "credentials.json", self.SCOPES)
+                self.creds = flow.run_local_server(port=0)
+            with open("token.json", "w") as token:
+                token.write(self.creds.to_json())
+
+# event description is created assuming no variable is used from csv
+# variables in description are taken as user input only..
+# do proper mapping in variable-mapping and use proper variable names in template
+    def create_event(self):
+        self.template_file = self.template_file_entry_calendar.get()
+        self.csv_file = self.csv_file_entry_calendar.get()
+
+        with open(self.template_file, "r") as file:
+            self.subject_template = file.readline().strip()
+            self.email_body_template = "".join(file.readlines()[1:])
+
+        with open("./templates/signature") as file:
+            self.signature = file.read()
+
+        email_body = self.fill_variables(
+            self.email_body_template, {})
+        subject = self.fill_variables(self.subject_template, {})
+
+        service = build('calendar', 'v3', credentials=self.creds)
+        email_list = []
+        with open(self.csv_file, newline="") as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                required_columns = set([column for variables in variable_column_mapping.values(
+                ) for column in variables if column in row])
+
+                variables = {}
+                for variable, columns in variable_column_mapping.items():
+                    for column in columns:
+                        if column in required_columns:
+                            variables[variable] = row.get(column, "").strip()
+                            break
+
+                email = variables.get('email', "").strip()
+                email_list.append(email)
+
+        print(email_list)
+
+        event = {
+            'summary': subject,
+            'description': email_body,
+            'start': {
+                'dateTime': '2024-03-27T10:00:00',
+                'timeZone': 'Asia/Kolkata',  # Update with your time zone
+            },
+            'end': {
+                'dateTime': '2024-03-27T11:00:00',
+                'timeZone': 'Asia/Kolkata',  # Update with your time zone
+            },
+            'attendees': [{'email': email} for email in email_list],
+            'reminders': {
+                'useDefault': False,
+                'overrides': [
+                    {'method': 'email', 'minutes': 24 * 60},
+                    {'method': 'popup', 'minutes': 10},
+                ],
+            },
+            'conferenceData': {
+                'createRequest': {
+                    'requestId': 'sample123',
+                    'conferenceSolutionKey': {
+                        'type': 'hangoutsMeet'
+                    }
+                }
+            },
+            'guestsCanModify': False,
+            'guestsCanInviteOthers': False,
+            'guestsCanSeeOtherGuests': False,
+            'sendNotifications': True  # Send invitation emails
+        }
+
+        event = service.events().insert(calendarId='primary', body=event,
+                                        conferenceDataVersion=1).execute()
+        print('Event created: %s' % (event.get('htmlLink')))
 
 
 if __name__ == "__main__":
