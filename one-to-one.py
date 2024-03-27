@@ -16,7 +16,8 @@ from tkhtmlview import HTMLLabel
 from tkinterweb import HtmlFrame
 from tkinter import filedialog
 from tkinter import ttk, messagebox
-
+from datetime import datetime
+from tkcalendar import Calendar
 # If modifying SCOPES, delete the file token.json.
 
 
@@ -306,7 +307,12 @@ class EmailSender:
 
     # command for continue button after loading user variables
     def continue_after_variables(self, frame):
-        if all(entry.get() for entry in self.variables.values()):
+        if all(entry.get() for entry in self.variables.values()) and frame == self.email_frame:
+            self.root.quit()
+            self.load = True
+            self.display_initial_mail(frame)
+        
+        elif all(entry.get() for entry in self.variables.values()) and all(entry.get() for entry in self.timing_entries) and frame == self.calendar_frame:
             self.root.quit()
             self.load = True
             self.display_initial_mail(frame)
@@ -347,9 +353,9 @@ class EmailSender:
     def load_calendar_frame(self):
         label = Label(self.calendar_frame, text='Calendar Invite',
                       font=("Helvetica", "14"))
-        label.pack(side='top')
+        label.pack()
         label = Label(self.calendar_frame, text=' ')
-        label.pack(side='top')
+        label.pack()
         select_csv_button = Button(self.calendar_frame, text="Select CSV File",
                                    command=self.select_csv_file_calendar, bg='#007bff', fg='white')
         select_csv_button.pack()
@@ -361,16 +367,58 @@ class EmailSender:
             self.calendar_frame, text="Select Template File", command=self.select_template_file_calendar, bg='#007bff', fg='white')
         select_template_button_calendar.pack()
 
+
         self.template_file_entry_calendar = Entry(
             self.calendar_frame, width=50)
         self.template_file_entry_calendar.pack()
+        label = Label(self.calendar_frame, text=' ')
+        label.pack()
+
+        self.start_frame = Frame(self.calendar_frame)
+        self.start_frame.pack()
+
+        self.end_frame = Frame(self.calendar_frame)
+        self.end_frame.pack()
+
+        self.timing_entries = []
+
+        self.date_label = Label(self.start_frame, text="Select Start date (YYYY-MM-DD):")
+        self.date_label.pack(side=LEFT)
+
+        self.date_entry = Entry(self.start_frame)
+        self.date_entry.pack(side=LEFT)
+        self.timing_entries.append(self.date_entry)
+
+        self.time_label = Label(self.start_frame, text="Select Start Time (HH:MM):")
+        self.time_label.pack(side=LEFT)
+
+        self.time_entry = Entry(self.start_frame)
+        self.time_entry.pack(side=LEFT)
+        self.timing_entries.append(self.time_entry)
+
+        self.end_date_label = Label(self.end_frame, text="Select End date (YYYY-MM-DD):")
+        self.end_date_label.pack(side=LEFT)
+
+        self.end_date_entry = Entry(self.end_frame)
+        self.end_date_entry.pack(side=LEFT)
+        self.timing_entries.append(self.end_date_entry)
+
+        self.end_time_label = Label(self.end_frame, text="Select End Time (HH:MM):")
+        self.end_time_label.pack(side=LEFT)
+
+        self.end_time_entry = Entry(self.end_frame)
+        self.end_time_entry.pack(side=LEFT)
+        self.timing_entries.append(self.end_time_entry)
+
+        label_calendar = Label(self.calendar_frame, text='')
+        label_calendar.pack()
 
         button_load_calendar = Button(self.calendar_frame, text='Load',
                                       command=self.load_files_calendar, background='#45f775')
         button_load_calendar.pack()
 
         label_calendar = Label(self.calendar_frame, text='')
-        label_calendar.pack(side='top')
+        label_calendar.pack()
 
         button_cancel = Button(
             self.calendar_frame, text='Cancel', command=self.command_cancel_load, background='#c73243')
@@ -452,12 +500,13 @@ class EmailSender:
             'summary': subject,
             'description': email_body,
             'start': {
-                'dateTime': '2024-03-27T10:00:00',
-                'timeZone': 'Asia/Kolkata',  # Update with your time zone
+                'dateTime': str(self.date_entry.get()).strip()+'T'+str(self.time_entry.get()).strip() +':00',
+                'timeZone': 'Asia/Kolkata',
             },
+            # '2024-03-27T11:00:00'
             'end': {
-                'dateTime': '2024-03-27T11:00:00',
-                'timeZone': 'Asia/Kolkata',  # Update with your time zone
+                'dateTime': str(self.end_date_entry.get()).strip()+'T'+str(self.end_time_entry.get()).strip()+':00',
+                'timeZone': 'Asia/Kolkata', 
             },
             'attendees': [{'email': email} for email in email_list],
             'reminders': {
