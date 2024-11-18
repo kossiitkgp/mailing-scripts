@@ -2,6 +2,7 @@
 
 Things to keep in mind regarding templates:
 
+- The template should be a `.html` file
 - First line is the subject for the mail.
 - Mail body and subject __are and must be__ separated by an empty new line.
 - Use HTML syntax to format the mail body.
