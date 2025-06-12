@@ -25,7 +25,7 @@ SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 # Various files being used
 template_file = "./templates/" + sys.argv[1]
 csv_file = "./csv/" + sys.argv[2]
-signature_file = "./templates/signature"
+signature_file = "./templates/signature.html"
 
 # Getting subject and mail body
 lines = []
@@ -122,7 +122,7 @@ def main(subject_template, email_body_template, signature):
             subject = fill_variables(subject_template, variables)
             
             sender = "admin@kossiitkgp.org"
-            email_content = email_body + signature
+            email_content = email_body + "<br/>" + signature
             message = create_message(sender, email, subject, email_content)
             send_message(service, "me", {"raw": message})
             print(f'Message sent to: {email}')
