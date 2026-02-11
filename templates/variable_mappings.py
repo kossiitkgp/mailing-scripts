@@ -6,5 +6,6 @@
 variable_column_mapping = {
     "name": ["Name", "Name ", " Name", " Name ", "name", "name", " name", " name "],
     "taskURL": ["Tentative Task that you want to allot"],
-    "email": ["Email", "Email ", " Email", " Email " "email", "email ", " email",  " email " "Email Address", "Email address"]
+    "email": ["Email", "Email ", " Email", " Email " "email", "email ", " email",  " email " "Email Address", "Email address"],
+    "github": ["Github", "GitHub", "github", "GithubID"]
 }
