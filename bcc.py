@@ -57,6 +57,11 @@ def send_message(service, user_id, message):
     except Exception as e:
         print(f"An error occurred while sending the message: {e}")
 
+def ensure_placeholders_filled(content):
+    placeholders = re.findall(r"\{(.*?)\}", content)
+    if placeholders:
+        raise ValueError(f"Unfilled placeholders found in the content: {placeholders}")
+
 def fill_variables(content, variables):
     for variable, value in variables.items():
         placeholder = "{" + variable + "}"
@@ -99,6 +104,9 @@ def main(subject, email_body, signature):
             
         email_body = fill_variables(email_body, variables)
         subject = fill_variables(subject, variables)
+
+        ensure_placeholders_filled(email_body)
+        ensure_placeholders_filled(subject)
 
     with open(csv_file, newline="") as f:
         reader = csv.DictReader(f)
