@@ -25,7 +25,7 @@ SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 # Various files being used
 template_file = "./templates/" + sys.argv[1]
 csv_file = "./csv/" + sys.argv[2]
-signature_file = "./templates/signature"
+signature_file = "./templates/signature.html"
 
 # Getting subject and mail body
 lines = []
